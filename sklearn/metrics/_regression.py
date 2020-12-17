@@ -335,7 +335,7 @@ def mean_squared_error(y_true, y_pred, *,
     y_type, y_true, y_pred, multioutput = _check_reg_targets(
         y_true, y_pred, multioutput)
     check_consistent_length(y_true, y_pred, sample_weight)
-    output_errors = np.average((y_true - y_pred) ** 2, axis=0,
+    output_errors = np.average(np.square(y_true - y_pred), axis=0,
                                weights=sample_weight)
 
     if not squared:
@@ -554,11 +554,11 @@ def explained_variance_score(y_true, y_pred, *,
     check_consistent_length(y_true, y_pred, sample_weight)
 
     y_diff_avg = np.average(y_true - y_pred, weights=sample_weight, axis=0)
-    numerator = np.average((y_true - y_pred - y_diff_avg) ** 2,
+    numerator = np.average(np.square(y_true - y_pred - y_diff_avg),
                            weights=sample_weight, axis=0)
 
     y_true_avg = np.average(y_true, weights=sample_weight, axis=0)
-    denominator = np.average((y_true - y_true_avg) ** 2,
+    denominator = np.average(np.square(y_true - y_true_avg),
                              weights=sample_weight, axis=0)
 
     nonzero_numerator = numerator != 0
@@ -688,10 +688,10 @@ def r2_score(y_true, y_pred, *, sample_weight=None,
     else:
         weight = 1.
 
-    numerator = (weight * (y_true - y_pred) ** 2).sum(axis=0,
+    numerator = (weight * np.square(y_true - y_pred)).sum(axis=0,
                                                       dtype=np.float64)
-    denominator = (weight * (y_true - np.average(
-        y_true, axis=0, weights=sample_weight)) ** 2).sum(axis=0,
+    denominator = np.square(weight * (y_true - np.average(
+        y_true, axis=0, weights=sample_weight))).sum(axis=0,
                                                           dtype=np.float64)
     nonzero_denominator = denominator != 0
     nonzero_numerator = numerator != 0
